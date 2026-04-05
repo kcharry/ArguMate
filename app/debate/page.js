@@ -8,6 +8,7 @@ import {
     getACPrompt,
     getNCPrompt,
     getCrossExResponsePrompt,
+    getNRPrompt,
     getJudgePrompt
 } from "../../lib/prompts";
 import { getRandomTopic } from "../../lib/topics";
@@ -77,7 +78,7 @@ export default function DebatePage() {
       setStage("ai_nc");
     }
 
-    else if (currentStage == "ai_nc") { // user JUST responded to cross exam --> ai provides negative constructive
+    else if (currentStage === "ai_nc") { // user JUST responded to cross exam --> ai provides negative constructive
         addMessage("user", `Cross-Response:\n${userInput || "..."}`);
 
         const ai_neg_constructive = await generateAI(
@@ -90,7 +91,7 @@ export default function DebatePage() {
         setStage("user_aff_cross");
     }
     
-    else if (currentStage == "user_aff_cross"){
+    else if (currentStage === "user_aff_cross"){
       addMessage("user", `Cross-Ex:\n${userInput}`); 
 
       const ai_cross_response = await generateAI(
@@ -98,6 +99,30 @@ export default function DebatePage() {
       ); 
 
       addMessage("ai mate", `Cross-Response:\n${ai_cross_response}`);
+
+      setStage("user_1ar");
+    }
+
+    else if (currentStage === "user_1ar"){
+      addMessage("user", `First Aff Rebuttal\n${userInput}`);
+
+      setStage("ai_nr"); 
+    }
+
+    else if (currentStage === "ai_nr"){
+      const ai_neg_rebuttal = await generateAI(
+        getNRPrompt(topic, userInput, messages, division) // TODO
+      );
+
+      addMessage("ai mate", `Negative Rebuttal:\n${ai_neg_rebuttal}`);
+
+      setStage("user_2ar");
+    }
+
+    else if (currentStage === "user_2ar"){
+      addMessage("user", `Second Aff Rebuttal\n${userInput}`);
+
+      setStage("judge");
     }
 
     // ===== USER NC, AI AC=====
@@ -146,7 +171,7 @@ export default function DebatePage() {
     // auto-run on stage change if it's an AI-first stage
   useEffect(() => {
     if (!topic) return; // wait until topic is loaded
-    if (stage === "ai_ac" || stage === "judge") {
+    if (stage === "ai_ac" || stage === "ai_nr" || stage === "judge") {
       runDebate(stage);
     }
   },[stage, topic]);
@@ -186,6 +211,12 @@ export default function DebatePage() {
                 ? "Negative Constructive"
                 : stage === "user_neg_cross" || stage ==="user_aff_cross"
                 ? "Cross Examination"
+                : stage === "user_1ar"
+                ? "First Aff Rebuttal"
+                : stage === "ai_nr"
+                ? "Negative Rebuttal"
+                : stage === "user_2ar"
+                ? "Second Aff Rebuttal"
                 : stage === "judge"
                 ? "Juding"
                 : stage === "done"
@@ -223,6 +254,10 @@ export default function DebatePage() {
                 ? "Enter your cross response..."
                 : stage === "user_neg_cross" || stage === "user_aff_cross"
                 ? "Enter your cross examination questions..."
+                : stage === "user_1ar"
+                ? "Enter your first rebuttal..."
+                : stage === "user_2ar"
+                ? "Enter your second rebuttal..."
                 : "..."
               }
             />
