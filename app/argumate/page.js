@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.heading}>ArguMate ⚔️</h1>
+        <h1 className={styles.heading}>ArgueMate ⚔️</h1>
         <p className={styles.subtitle}>Master the art of IPDA debate. Choose your division and position to begin.</p>
 
         <form className={styles.form}>
@@ -59,21 +59,6 @@ export default function Home() {
           Start Debate
         </button>
 
-        <button type="button" className={styles.secondaryButton} onClick={toggleLearnMore}>
-          {learnMoreOpen ? "Hide Details" : "Learn More"}
-        </button>
-
-        {learnMoreOpen && (
-          <div className={styles.learnMore}>
-            <h2 className={styles.learnMoreHeading}>Learn More</h2>
-            <p className={styles.learnMoreText}>
-              ArguMate helps you practice IPDA debate by generating topics, guiding your position choices, and warming you up with an engaging prep experience.
-            </p>
-            <p className={styles.learnMoreText}>
-              Select your division and side to get started. If you choose Random, ArguMate will assign either Affirmative or Negative so you can sharpen both perspectives.
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
