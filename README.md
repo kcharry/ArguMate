@@ -19,6 +19,8 @@ Instead of debating blindly or struggling to structure ideas, ArgueMate guides y
 
 ## Fact CheckMate 
 
+## Find Schools
+
 ## 🛠️ Built With
 - Next.js (React) 
 - CSS 
